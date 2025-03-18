@@ -1,0 +1,22 @@
+import re
+
+DIGITS = {'0': 'ноль', '1': 'один', '2': 'два', '3': 'три', '4': 'четыре',
+          '5': 'пять', '6': 'шесть', '7': 'семь', '8': 'восемь', '9': 'девять'}
+
+with open('input.txt', encoding='utf-8') as f:
+    text = f.read()
+
+first_num = True
+
+def convert_number(match):
+    global first_num
+    num = match.group()
+    if first_num:
+        first_num = False
+        return ' '.join(DIGITS[d] for d in num if d.isdigit())
+    return num.replace('.', ',')
+
+# Ищем числа с точкой и заменяем
+result = re.sub(r'\b\d*\.\d+\b', convert_number, text)
+
+print(result)
