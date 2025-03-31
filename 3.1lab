@@ -1,0 +1,22 @@
+import numpy as np
+import random
+
+K = int(input())
+N = int(input())
+A = np.random.randint(-10, 11, (N, N))
+F = A.copy()
+zeros_2 = np.count_nonzero(F[:N//2, N//2:] == 0)
+prod_4 = np.prod(F[N//2:, :N//2][F[N//2:, :N//2] != 0])
+if zeros_2 > prod_4:
+    F[:N//2, :N//2], F[N//2:, :N//2] = F[N//2:, :N//2].copy(), F[:N//2, :N//2].copy()
+else:
+    temp = F[:N//2, N//2:].copy()
+    F[:N//2, N//2:] = F[:N//2, :N//2]
+    F[:N//2, :N//2] = temp
+F_result = ((K * A.T) @ (F + A)) - (K * F.T)
+print("A:")
+print(A)
+print("F:")
+print(F)
+print("Результат:")
+print(F_result)
