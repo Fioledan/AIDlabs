@@ -1,0 +1,34 @@
+import numpy as np
+
+# Ввод данных
+K, N = map(int, input("Введите K и N: ").split())
+A = np.random.randint(-10, 11, (K, N))  # Матрица A (4xN) со случайными числами [-10, 10]
+print("Матрица A:\n", A)
+
+# Делим на блоки (K=4, значит 2x(N/2))
+N_half = N // 2
+E = A[:2, :N_half]  # Левый верхний
+B = A[:2, N_half:]  # Правый верхний
+D = A[2:, :N_half]  # Левый нижний
+C = A[2:, N_half:]  # Правый нижний
+print("Блок E:\n", E, "\nБлок B:\n", B, "\nБлок D:\n", D, "\nБлок C:\n", C)
+
+# Считаем суммы по периметру (для 2xM блока периметр — это все элементы, кроме центральных, но тут 2xM, считаем все)
+sum_E = np.sum(E)
+sum_B = np.sum(B)
+sum_C = np.sum(C)
+print("Сумма E:", sum_E, "Сумма B:", sum_B, "Сумма C:", sum_C)
+
+# Формируем матрицу F
+F = np.zeros((K, N))  # Изначально F — нулевая матрица
+if sum_E > sum_B and sum_E > sum_C:
+    F = A  # Если E больше, F = A (симметрия)
+else:
+    F[:2, :N_half] = E  # Иначе F в блоке E = E (несимметрия)
+print("Матрица F:\n", F)
+
+# Обновляем A: A = A^T - K * F
+A_T = A.T  # Транспонируем A
+K_val = np.random.randint(-10, 11)  # Случайное K
+A = A_T - K_val * F
+print("K:", K_val, "\nНовая матрица A:\n", A)
