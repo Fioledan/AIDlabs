@@ -1,8 +1,18 @@
-with open('matrix.txt', 'w') as f:
-    f.write("-1 1 1 1 1 1 -1\n")
-    f.write("4 -1 1 1 1 -1 2\n")
-    f.write("4 4 -1 1 -1 2 2\n")
-    f.write("4 4 4 -1 2 2 2\n")
-    f.write("4 4 -1 3 -1 2 2\n")
-    f.write("4 -1 3 3 3 -1 2\n")
-    f.write("-1 3 3 3 3 3 -1")
+import numpy as np
+
+A = np.loadtxt('matrix.txt', dtype=int)
+N = len(A)
+k = int(input("k: "))
+
+F = A.copy()
+mid = N // 2
+
+zeros_2 = np.count_nonzero(A[0, :mid+1] == 0) + np.count_nonzero(A[:mid+1, -1] == 0)
+prod_4 = np.prod(A[mid:, :mid][A[mid:, :mid] != -1])
+
+if zeros_2 > (prod_4 if prod_4.size else 0):
+    F[:mid, :mid], F[mid:, mid:] = F[mid:, mid:].T, F[:mid, :mid].T
+else:
+    F[:mid, :mid], F[:mid, mid:] = F[:mid, mid:], F[:mid, :mid].copy()
+
+print("A:\n", A, "\n\nF:\n", F, "\n\nResult:\n", (k*A.T)@(F+A) - k*F.T)
