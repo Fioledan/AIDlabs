@@ -1,4 +1,31 @@
-import numpy as npЧтение входных данных из файлаwith open("in", "r") as file: lines = file.readlines() K = int(lines[0]) N = int(lines[1])Генерация матрицы AA = np.random.randint(-10, 11, (N, N)) F = A.copy()Вычисленияzeros_2 = np.count_nonzero(F[:N//2, N//2:] == 0) prod_4 = np.prod(F[N//2:, :N//2][F[N//2:, :N//2] != 0])if zeros_2 > prod_4: F[:N//2, :N//2], F[N//2:, :N//2] = F[N//2:, :N//2].copy(), F[:N//2, :N//2].copy() else: temp = F[:N//2, N//2:].copy() F[:N//2, N//2:] = F[:N//2, :N//2] F[:N//2, :N//2] = tempF_result = ((K * A.T) @ (F + A)) - (K * F.T)Вывод результатовprint("A:") print(A) print("F:") print(F) print("Результат:") print(F_result)
+import numpy as np
 
+with open("in", "r") as file:
+    lines = file.readlines()
+    K = int(lines[0])
+    N = int(lines[1])
+    A = np.array([list(map(int, line.split())) for line in lines[2:N+2]])
 
+print("A:")
+print(A)
 
+F = A.copy()
+print("F:")
+print(F)
+
+zeros_2 = np.count_nonzero(F[:N//2, N//2:] == 0)
+prod_4 = np.prod(F[N//2:, N//2:][F[N//2:, N//2:] != 0]) if np.any(F[N//2:, N//2:] != 0) else 0
+
+if zeros_2 > prod_4:
+    F[:N//2, :N//2], F[N//2:, N//2:] = F[N//2:, N//2:].copy(), F[:N//2, :N//2].copy()
+else:
+    temp = F[:N//2, N//2:].copy()
+    F[:N//2, N//2:] = F[:N//2, :N//2]
+    F[:N//2, :N//2] = temp
+
+print("F после замены:")
+print(F)
+
+F_result = ((K * A.T) @ (F + A)) - (K * F.T)
+print("Результат:")
+print(F_result)
