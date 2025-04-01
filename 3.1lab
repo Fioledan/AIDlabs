@@ -1,26 +1,8 @@
-import numpy as np
-
-def read_matrix(file_path):
-    with open(file_path, 'r') as f:
-        return np.array([list(map(int, line.split())) for line in f])
-
-A = read_matrix('input.txt')
-N = len(A)
-k = int(input("k: "))
-
-F = A.copy()
-mid = N // 2
-
-zeros_perimeter_2 = np.count_nonzero(A[0, :mid] == 0) + np.count_nonzero(A[:mid, -1] == 0)
-product_perimeter_4 = np.prod(A[mid:, :mid][A[mid:, :mid] != -1])
-
-if zeros_perimeter_2 > product_perimeter_4:
-    F[:mid, :mid], F[mid:, mid:] = F[mid:, mid:].T, F[:mid, :mid].T
-else:
-    F[:mid, :mid], F[:mid, mid:] = F[:mid, mid:], F[:mid, :mid].copy()
-
-result = (k * A.T) @ (F + A) - k * F.T
-
-print("A:\n", A)
-print("\nF:\n", F)
-print("\nResult:\n", result)
+with open('matrix.txt', 'w') as f:
+    f.write("-1 1 1 1 1 1 -1\n")
+    f.write("4 -1 1 1 1 -1 2\n")
+    f.write("4 4 -1 1 -1 2 2\n")
+    f.write("4 4 4 -1 2 2 2\n")
+    f.write("4 4 -1 3 -1 2 2\n")
+    f.write("4 -1 3 3 3 -1 2\n")
+    f.write("-1 3 3 3 3 3 -1")
