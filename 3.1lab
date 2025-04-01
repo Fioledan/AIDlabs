@@ -1,32 +1,16 @@
-pip install numpy
 import numpy as np
 
-with open("in", "r") as file:
-    lines = file.readlines()
-    K = int(lines[0])
-    N = int(lines[1])
-    A = np.array([list(map(int, line.split())) for line in lines[2:N+2]])
+with open("in.txt", "r") as file: lines = file.readlines() K = int(lines[0]) N = int(lines[1]) A = np.array([list(map(int, line.split())) for line in lines[2:N+2]])
 
-print("A:")
-print(A)
+print("A:") print(A)
 
-F = A.copy()
-print("F:")
-print(F)
+F = A.copy() print("F:") print(F)
 
-zeros_2 = np.count_nonzero(F[:N//2, N//2:] == 0)
-prod_4 = np.prod(F[N//2:, N//2:][F[N//2:, N//2:] != 0]) if np.any(F[N//2:, N//2:] != 0) else 0
+zeros_2 = np.count_nonzero(F[:N//2, N//2:] == 0) prod_4 = np.prod(F[N//2:, N//2:][F[N//2:, N//2:] != 0]) if np.any(F[N//2:, N//2:] != 0) else 0
 
-if zeros_2 > prod_4:
-    F[:N//2, :N//2], F[N//2:, N//2:] = F[N//2:, N//2:].copy(), F[:N//2, :N//2].copy()
-else:
-    temp = F[:N//2, N//2:].copy()
-    F[:N//2, N//2:] = F[:N//2, :N//2]
-    F[:N//2, :N//2] = temp
+if zeros_2 > prod_4: F[:N//2, :N//2], F[N//2:, N//2:] = F[N//2:, N//2:].copy(), F[:N//2, :N//2].copy() else: temp = F[:N//2, N//2:].copy() F[:N//2, N//2:] = F[:N//2, :N//2] F[:N//2, :N//2] = temp
 
-print("F после замены:")
-print(F)
+print("F после замены:") print(F)
 
-F_result = ((K * A.T) @ (F + A)) - (K * F.T)
-print("Результат:")
-print(F_result)
+F_result = ((K * A.T) @ (F + A)) - (K * F.T) print("Результат:") print(F_r
+esult)
