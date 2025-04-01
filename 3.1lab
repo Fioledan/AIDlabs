@@ -1,18 +1,37 @@
 import numpy as np
 
+# Чтение матрицы из файла
 A = np.loadtxt('matrix.txt', dtype=int)
 N = len(A)
-k = int(input("k: "))
+k = int(input("Введите k: "))
 
+# Создаем копию матрицы A
 F = A.copy()
 mid = N // 2
 
-zeros_2 = np.count_nonzero(A[0, :mid+1] == 0) + np.count_nonzero(A[:mid+1, -1] == 0)
-prod_4 = np.prod(A[mid:, :mid][A[mid:, :mid] != -1])
+# Определяем области
+area1 = A[:mid, :mid]
+area2 = A[:mid, mid:]
+area4 = A[mid:, mid:]
 
-if zeros_2 > (prod_4 if prod_4.size else 0):
+# Периметр области 2 (верхняя правая + последний столбец до середины)
+perimeter2 = np.concatenate((A[0, mid:], A[:mid, -1]))
+zeros_perimeter2 = np.count_nonzero(perimeter2 == 0)
+
+# Периметр области 4 (нижняя правая)
+perimeter4 = np.concatenate((A[mid:, -1], A[-1, mid:]))
+product_perimeter4 = np.prod(perimeter4[perimeter4 != -1])
+
+# Меняем области в F согласно условию
+if zeros_perimeter2 > product_perimeter4:
     F[:mid, :mid], F[mid:, mid:] = F[mid:, mid:].T, F[:mid, :mid].T
 else:
     F[:mid, :mid], F[:mid, mid:] = F[:mid, mid:], F[:mid, :mid].copy()
 
-print("A:\n", A, "\n\nF:\n", F, "\n\nResult:\n", (k*A.T)@(F+A) - k*F.T)
+# Вычисляем результат
+result = (k * A.T) @ (F + A) - k * F.T
+
+# Выводим результаты
+print("Матрица A:\n", A)
+print("\nМатрица F после преобразований:\n", F)
+print("\nРезультат вычисления:\n", result)
