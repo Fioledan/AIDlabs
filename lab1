@@ -1,98 +1,70 @@
 import time
+import random
 from itertools import permutations
 
-# Алгоритмический подход: рекурсивная генерация перестановок с учетом уникальности бойцов
+# Алгоритмический подход: рекурсивная генерация перестановок
 def generate_assignments_algo(k, n):
     result = []
     used = [False] * k  # Массив для отслеживания использованных бойцов
-    
+
     def backtrack(assignment, obj_idx):
-        if obj_idx == n:  # Если назначены все объекты
+        if obj_idx == n:
             result.append(assignment[:])
             return
         for i in range(k):
-            if not used[i]:  # Если боец еще не использован
+            if not used[i]:
                 used[i] = True
-                assignment.append(i + 1)  # Добавляем бойца (нумерация с 1)
+                assignment.append(i + 1)
                 backtrack(assignment, obj_idx + 1)
                 assignment.pop()
                 used[i] = False
-    
+
     backtrack([], 0)
     return result
 
 # Подход с использованием itertools.permutations
 def generate_assignments_itertools(k, n):
-    fighters = list(range(1, k + 1))  # Список бойцов: [1, 2, ..., K]
+    fighters = list(range(1, k + 1))
     return list(permutations(fighters, n))
 
-# Основная функция для части 1 с модифицированным выводом
+# Основная функция
 def part1(K, N):
     print("=== Часть 1: Генерация всех возможных назначений ===")
-    
-    # Проверка краевых случаев
+
+    # Проверка входных значений
     if K < N:
         print("Ошибка: Количество бойцов должно быть не меньше количества объектов.")
         return
     if K <= 0 or N <= 0:
         print("Ошибка: K и N должны быть положительными.")
         return
-    
+
     # Алгоритмический подход
     start_time = time.time()
     assignments_algo = generate_assignments_algo(K, N)
     algo_time = time.time() - start_time
-    
     print(f"\nАлгоритмический подход: {len(assignments_algo)} вариантов")
     print(f"Время выполнения: {algo_time:.6f} секунд")
-    
-    # Группировка перестановок по позиции первого бойца
-    first_fighter_positions = [[] for _ in range(N)]  # Списки для позиций бойца 1
-    for perm in assignments_algo:
-        # Находим позицию бойца 1 (индекс, где perm[i] == 1)
-        for i in range(len(perm)):
-            if perm[i] == 1:
-                first_fighter_positions[i].append(perm)
-                break
-    
-    # Вывод по группам
-    for pos in range(N):
-        if first_fighter_positions[pos]:  # Если есть перестановки для этой позиции
-            print(f"\nПервый боец на объекте {pos + 1}:")
-            for perm in first_fighter_positions[pos]:
-                print(f"  Перестановка: {perm}")
-                for i, fighter in enumerate(perm):
-                    print(f"    Объект {i + 1}: Боец {fighter}")
-    
+    print("Случайные 5 вариантов (или все, если их меньше):")
+    for perm in random.sample(assignments_algo, min(5, len(assignments_algo))):
+        print(perm)
+
     # Подход с itertools
     start_time = time.time()
     assignments_itertools = generate_assignments_itertools(K, N)
     itertools_time = time.time() - start_time
-    
     print(f"\nПодход с itertools: {len(assignments_itertools)} вариантов")
     print(f"Время выполнения: {itertools_time:.6f} секунд")
-    
-    # Группировка перестановок для itertools
-    first_fighter_positions = [[] for _ in range(N)]
-    for perm in assignments_itertools:
-        for i in range(len(perm)):
-            if perm[i] == 1:
-                first_fighter_positions[i].append(perm)
-                break
-    
-    # Вывод по группам
-    for pos in range(N):
-        if first_fighter_positions[pos]:
-            print(f"\nПервый боец на объекте {pos + 1}:")
-            for perm in first_fighter_positions[pos]:
-                print(f"  Перестановка: {perm}")
-                for i, fighter in enumerate(perm):
-                    print(f"    Объект {i + 1}: Боец {fighter}")
-    
-    # Сравнение времени
-    print(f"\nСравнение: itertools быстрее на {(algo_time - itertools_time):.6f} секунд")
+    print("Случайные 5 вариантов (или все, если их меньше):")
+    for perm in random.sample(assignments_itertools, min(5, len(assignments_itertools))):
+        print(perm)
 
-# Тест
-K = 3  # Количество бойцов
-N = 2  # Количество объектов
+    # Сравнение времени
+    diff = algo_time - itertools_time
+    comparison = "быстрее" if diff > 0 else "медленнее"
+    print(f"\nСравнение: itertools {comparison} на {abs(diff):.6f} секунд")
+
+# Пример вызова
+K = 5
+N = 3
 part1(K, N)
