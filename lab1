@@ -1,11 +1,10 @@
 import time
-import random
 from itertools import permutations
 
-# Алгоритмический подход: рекурсивная генерация перестановок
+# Рекурсивная генерация всех уникальных назначений
 def generate_assignments_algo(k, n):
     result = []
-    used = [False] * k  # Массив для отслеживания использованных бойцов
+    used = [False] * k
 
     def backtrack(assignment, obj_idx):
         if obj_idx == n:
@@ -22,18 +21,17 @@ def generate_assignments_algo(k, n):
     backtrack([], 0)
     return result
 
-# Подход с использованием itertools.permutations
+# Генерация через itertools.permutations
 def generate_assignments_itertools(k, n):
     fighters = list(range(1, k + 1))
     return list(permutations(fighters, n))
 
 # Основная функция
 def part1(K, N):
-    print("=== Часть 1: Генерация всех возможных назначений ===")
+    print("=== Часть 1: Генерация всех возможных назначений ===\n")
 
-    # Проверка входных значений
     if K < N:
-        print("Ошибка: Количество бойцов должно быть не меньше количества объектов.")
+        print("Ошибка: количество бойцов должно быть не меньше количества объектов.")
         return
     if K <= 0 or N <= 0:
         print("Ошибка: K и N должны быть положительными.")
@@ -43,20 +41,22 @@ def part1(K, N):
     start_time = time.time()
     assignments_algo = generate_assignments_algo(K, N)
     algo_time = time.time() - start_time
-    print(f"\nАлгоритмический подход: {len(assignments_algo)} вариантов")
+    print(f"Алгоритмический подход: найдено {len(assignments_algo)} вариантов")
     print(f"Время выполнения: {algo_time:.6f} секунд")
-    print("Случайные 5 вариантов (или все, если их меньше):")
-    for perm in random.sample(assignments_algo, min(5, len(assignments_algo))):
+    print("Все варианты:")
+    for perm in assignments_algo:
         print(perm)
+
+    print("\n" + "="*60 + "\n")
 
     # Подход с itertools
     start_time = time.time()
     assignments_itertools = generate_assignments_itertools(K, N)
     itertools_time = time.time() - start_time
-    print(f"\nПодход с itertools: {len(assignments_itertools)} вариантов")
+    print(f"Подход с itertools: найдено {len(assignments_itertools)} вариантов")
     print(f"Время выполнения: {itertools_time:.6f} секунд")
-    print("Случайные 5 вариантов (или все, если их меньше):")
-    for perm in random.sample(assignments_itertools, min(5, len(assignments_itertools))):
+    print("Все варианты:")
+    for perm in assignments_itertools:
         print(perm)
 
     # Сравнение времени
@@ -64,7 +64,7 @@ def part1(K, N):
     comparison = "быстрее" if diff > 0 else "медленнее"
     print(f"\nСравнение: itertools {comparison} на {abs(diff):.6f} секунд")
 
-# Пример вызова
+# Пример запуска
 K = 5
 N = 3
 part1(K, N)
