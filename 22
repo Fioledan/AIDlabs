@@ -1,5 +1,4 @@
 import time
-import math
 import matplotlib.pyplot as plt
 
 # Функция для вычисления факториала (для рекурсии)
@@ -17,24 +16,22 @@ def F_recursive(n, memo=None):
     if n == 1 or n == 2:
         memo[n] = 1
         return 1
-    # Знак (-1)^n заменяем на проверку четности
     sign = -1 if n % 2 else 1
     memo[n] = sign * (F_recursive(n - 1, memo) // factorial(n))
     return memo[n]
 
-# Итеративная функция
+# Итеративная функция с использованием одной переменной
 def F_iterative(n):
     if n == 1 or n == 2:
         return 1
-    # Инициализация массива для хранения F(n)
-    F = [0] * (n + 1)
-    F[1] = F[2] = 1
-    factorial = 1  # Для вычисления факториала инкрементально
+    f_prev = 1  # F(2)
+    factorial = 2  # 2!
     for i in range(3, n + 1):
         factorial *= i  # Обновляем факториал
         sign = -1 if i % 2 else 1  # Знак (-1)^i
-        F[i] = sign * (F[i - 1] // factorial)
-    return F[n]
+        f_current = sign * (f_prev // factorial)
+        f_prev = f_current  # Обновляем предыдущее значение
+    return f_prev
 
 # Функция для измерения времени
 def measure_time(func, n):
@@ -44,13 +41,12 @@ def measure_time(func, n):
     return result, end - start
 
 # Основная программа
-n_values = [1, 2, 3, 4, 5, 10, 15, 20, 25, 30]  # Значения n для тестирования
+n_values = [1, 2, 3, 4, 5, 10, 15, 20, 25, 30]
 recursive_times = []
 iterative_times = []
 recursive_values = []
 iterative_values = []
 
-# Измеряем время и значения
 print("n\tРекурсия\tВремя (рек)\tИтерация\tВремя (итер)")
 print("-" * 60)
 for n in n_values:
@@ -65,7 +61,6 @@ for n in n_values:
     recursive_values.append(res_rec)
     iterative_values.append(res_iter)
     
-    # Вывод таблицы
     rec_time_str = f"{time_rec:.6f}" if time_rec is not None else "Ошибка"
     print(f"{n}\t{res_rec}\t\t{rec_time_str}\t{res_iter}\t\t{time_iter:.6f}")
 
