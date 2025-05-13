@@ -1,22 +1,76 @@
-import re
+import time
+import math
+import matplotlib.pyplot as plt
 
-DIGITS = {'0': 'ноль', '1': 'один', '2': 'два', '3': 'три', '4': 'четыре',
-          '5': 'пять', '6': 'шесть', '7': 'семь', '8': 'восемь', '9': 'девять'}
+# Рекурсивная функция для вычисления F(n)
+def F_recursive(n):
+    if n == 1 or n == 2:
+        return 1
+    else:
+        # Вычисляем факториал в знаменателе
+        factorial = 1
+        for i in range(1, n + 1):
+            factorial *= i
+        # Рекурсивный вызов
+        return ((-1) ** n) * (F_recursive(n - 1) // factorial)
 
-with open('input.txt', encoding='utf-8') as f:
-    text = f.read()
+# Итеративная функция для вычисления F(n)
+def F_iterative(n):
+    if n == 1 or n == 2:
+        return 1
+    # Список для хранения значений F(n)
+    F = [0] * (n + 1)
+    F[1] = 1
+    F[2] = 1
+    for i in range(3, n + 1):
+        # Вычисляем факториал
+        factorial = 1
+        for j in range(1, i + 1):
+            factorial *= j
+        # Вычисляем F(i) по формуле
+        F[i] = ((-1) ** i) * (F[i - 1] // factorial)
+    return F[n]
 
-first_num = True
+# Функция для измерения времени выполнения
+def measure_time(func, n):
+    start_time = time.time()
+    result = func(n)
+    end_time = time.time()
+    return result, end_time - start_time
 
-def convert_number(match):
-    global first_num
-    num = match.group()
-    if first_num:
-        first_num = False
-        return ' '.join(DIGITS[d] for d in num if d.isdigit())
-    return num.replace('.', ',')
+# Списки для хранения результатов
+n_values = list(range(1, 21))  # Проверяем до n=20, т.к. рекурсия может быть медленной
+recursive_times = []
+iterative_times = []
+results_recursive = []
+results_iterative = []
 
-# Ищем числа с точкой и заменяем
-result = re.sub(r'\b\d*\.\d+\b', convert_number, text)
+# Измеряем время и результаты для разных n
+print("n\tF_recursive\tTime_recursive\tF_iterative\tTime_iterative")
+print("-" * 50)
+for n in n_values:
+    # Рекурсивный подход
+    res_rec, time_rec = measure_time(F_recursive, n)
+    # Итеративный подход
+    res_iter, time_iter = measure_time(F_iterative, n)
+    
+    # Сохраняем результаты
+    recursive_times.append(time_rec)
+    iterative_times.append(time_iter)
+    results_recursive.append(res_rec)
+    results_iterative.append(res_iter)
+    
+    # Выводим таблицу
+    print(f"{n}\t{res_rec}\t\t{time_rec:.6f}\t{res_iter}\t\t{time_iter:.6f}")
 
-print(result)
+# Построение графика
+plt.figure(figsize=(10, 6))
+plt.plot(n_values, recursive_times, label="Рекурсия", marker='o')
+plt.plot(n_values, iterative_times, label="Итерация", marker='s')
+plt.xlabel("n")
+plt.ylabel("Время выполнения (сек)")
+plt.title("Сравнение времени выполнения рекурсивного и итеративного подходов")
+plt.legend()
+plt.grid(True)
+plt.savefig("comparison_plot.png")  # Сохраняем график
+plt.show()
